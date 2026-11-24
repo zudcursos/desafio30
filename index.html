@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1f5a40">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Desafio 30 Dias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: caloroso, encorajador, sem culpa — um caderno de hábitos de amiga
+   IDEA: uma planta que ganha uma folha a cada desafio cumprido
+   PICTURE: o ramo de 30 folhas ao lado do checklist do dia
+   COLOUR and TYPE: verde-folha profundo, branco, coral de destaque; Nunito arredondada
+   LAYOUT: faixa verde com o dia, abas, painel do dia + planta; empilha no celular */
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#0f1a15);--panel:light-dark(#f2f6f1,#17251e);--ink:light-dark(#14251c,#e8f0ea);
+--mute:light-dark(#5b6d62,#9fb3a7);--green:#1f5a40;--leaf:light-dark(#2f8a5f,#4fb383);--leaf0:light-dark(#dfe9e1,#24372c);
+--coral:#ff6f4f;--line:light-dark(#dbe5dd,#2a3d32)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Nunito,system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(20px,3vw,40px) max(5vw,16px)}
+header{background:var(--green);color:#fff}
+header .wrap,main{max-width:1100px;margin:0 auto}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.05;margin:0;font-weight:900;text-wrap:balance}
+h2{font-size:22px;margin:0 0 12px;font-weight:800}
+.sub{opacity:.85;margin:6px 0 0}
+.datenav{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.datenav button{background:rgba(255,255,255,.15);color:#fff;border:0}
+.daylbl{font-weight:800;font-size:18px}
+.tabs{display:flex;gap:6px;margin-top:20px;flex-wrap:wrap}
+.tabs button{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.4)}
+.tabs button[aria-selected=true]{background:#fff;color:var(--green);border-color:#fff}
+button,input,select,textarea{font:inherit;font-size:16px}
+button{min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;font-weight:700}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+.primary{background:var(--coral);border-color:var(--coral);color:#fff}
+.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+.card{background:var(--panel);border-radius:22px;padding:20px}
+.chal .n{color:var(--coral);font-weight:900;font-size:14px}
+.chal .t{font-size:clamp(24px,3.4vw,32px);line-height:1.1;font-weight:900;margin:4px 0 8px}
+.chal p{margin:0 0 14px;color:var(--mute)}
+.done-btn[aria-pressed=true]{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.habit{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.habit:first-of-type{border-top:0}
+.chk{width:44px;height:44px;padding:0;border-radius:14px;display:grid;place-items:center;flex:none}
+.chk[aria-pressed=true]{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.hname{flex:1;font-weight:700}
+.hname small{display:block;color:var(--mute);font-weight:500}
+.dots{display:flex;gap:6px;flex-wrap:wrap;width:100%;padding-left:56px}
+.dot{width:34px;height:34px;min-height:34px;padding:0;border-radius:50% 50% 50% 0;transform:rotate(-45deg)}
+.dot[aria-pressed=true]{background:#3c9be0;border-color:#3c9be0}
+.plantwrap{text-align:center}
+.plant{width:100%;max-width:300px;height:auto;display:block;margin:0 auto}
+.big{font-size:44px;font-weight:900;line-height:1;color:var(--leaf)}
+.stats{display:flex;justify-content:center;gap:24px;margin-top:10px;flex-wrap:wrap}
+.stats div{font-weight:700;color:var(--mute)}.stats b{display:block;font-size:24px;color:var(--ink)}
+.week{margin-top:16px;text-align:left}
+.wrow{display:grid;grid-template-columns:3.2em minmax(0,1fr) 3em;gap:8px;align-items:center;font-size:14px;margin:4px 0}
+.bar{height:12px;background:var(--leaf0);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--leaf);border-radius:6px}
+textarea{width:100%;min-height:80px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:10px}
+input,select{min-height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:0 12px}
+.moods{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}
+.moods button[aria-pressed=true]{background:var(--green);color:#fff;border-color:var(--green)}
+.list{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:3.4em minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--panel);border-radius:16px;padding:10px 14px}
+.row .d{font-weight:900;color:var(--coral);white-space:nowrap}.row .d small{display:block;color:var(--mute);font-weight:600}
+.row .ok{color:var(--leaf);font-weight:800;font-size:14px}
+.rate{display:flex;gap:4px;flex-wrap:wrap}.rate button{min-height:40px;padding:0 10px;font-size:14px}
+.rate button[aria-pressed=true][data-r=sim]{background:var(--leaf);color:#fff;border-color:var(--leaf)}
+.rate button[aria-pressed=true][data-r=talvez]{background:#e8b33c;color:#14251c;border-color:#e8b33c}
+.rate button[aria-pressed=true][data-r=nao]{background:#9a9a9a;color:#fff;border-color:#9a9a9a}
+.top3{display:grid;gap:8px;margin-bottom:20px}.top3 input{width:100%}
+.addform{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.addform input[type=text]{flex:1 1 200px}
+.note{font-size:14px;color:var(--mute)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;place-items:center;padding:16px}
+.modal.on{display:grid}.modal .card{max-width:420px;background:var(--bg)}
+@media(max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}.plantwrap{order:-1}.plant{max-width:220px}}
+@media(max-width:600px){.row{grid-template-columns:3em minmax(0,1fr)}.row .rate{grid-column:1/-1}}
+@media(prefers-reduced-motion:no-preference){.leaf{transition:fill .5s ease}}
+</style>
+</head>
+<body>
+<header class="band"><div class="wrap">
+  <h1>Meu Desafio 30 Dias</h1>
+  <p class="sub">Novos hábitos de vida · 24/11 a 23/12 · sem perfeição, só constância</p>
+  <div class="datenav">
+    <button id="prev" aria-label="Dia anterior">‹</button>
+    <span class="daylbl" id="daylbl"></span>
+    <button id="next" aria-label="Próximo dia">›</button>
+    <button id="today">Hoje</button>
+  </div>
+  <div class="tabs" role="tablist">
+    <button role="tab" data-v="hoje" aria-selected="true">Meu dia</button>
+    <button role="tab" data-v="trinta" aria-selected="false">30 dias e 2027</button>
+    <button role="tab" data-v="habitos" aria-selected="false">Meus hábitos</button>
+  </div>
+</div></header>
+
+<main class="band">
+  <section id="v-hoje">
+    <div class="grid">
+      <div style="display:grid;gap:20px">
+        <div class="card chal" id="chal"></div>
+        <div class="card"><h2>Hábitos de hoje</h2><div id="habits"></div></div>
+        <div class="card"><h2>Como me senti</h2>
+          <div class="moods" id="moods"></div>
+          <textarea id="note" placeholder="Uma frase sobre o seu dia…"></textarea>
+        </div>
+      </div>
+      <div class="card plantwrap">
+        <svg class="plant" id="plant" viewBox="0 0 300 420" role="img" aria-label="Planta do desafio"></svg>
+        <div class="big" id="bigcount"></div>
+        <div class="note">desafios cumpridos de 30</div>
+        <div class="stats" id="stats"></div>
+        <div class="week"><h2 style="font-size:17px">Últimos 7 dias · hábitos</h2><div id="week"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="v-trinta" hidden>
+    <div class="card" style="margin-bottom:20px">
+      <h2>Meus 3 hábitos para 2027</h2>
+      <div class="top3" id="top3"></div>
+      <p class="note">No fim do desafio, classifique cada dia: levar para 2027, talvez ou não funcionou para mim.</p>
+    </div>
+    <div class="list" id="days"></div>
+  </section>
+
+  <section id="v-habitos" hidden>
+    <div class="card">
+      <h2>Meus hábitos diários</h2>
+      <div id="hlist"></div>
+      <form class="addform" id="addf">
+        <input type="text" id="hn" placeholder="Novo hábito (ex.: Ler 10 páginas)" required maxlength="40">
+        <select id="ht"><option value="check">Marcar feito</option><option value="count">Contador</option></select>
+        <input type="number" id="hg" min="2" max="12" value="3" style="width:6em" aria-label="Meta do contador">
+        <button class="primary">Adicionar</button>
+      </form>
+      <p class="note">Contador: use para metas como copos d'água ou séries de exercício.</p>
+    </div>
+    <div class="card" style="margin-top:20px">
+      <h2>Backup</h2>
+      <p class="note">Os dados ficam salvos neste aparelho e navegador. Copie o backup para levar para outro aparelho.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="copyb">Copiar backup</button>
+        <button id="impb">Importar backup</button>
+        <button id="reset">Apagar tudo</button>
+      </div>
+      <textarea id="bk" hidden placeholder="Cole aqui o backup e toque em Importar de novo"></textarea>
+      <p class="note" id="bkmsg"></p>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal"><div class="card"><p id="mtxt"></p>
+  <div style="display:flex;gap:8px;justify-content:flex-end"><button id="mno">Cancelar</button><button class="primary" id="myes">Confirmar</button></div></div></div>
+
+<script>
+{
+const CH=[
+["Intenções do dia","Antes do celular, escreva de 1 a 3 intenções para hoje."],
+["Água antes do café","1 copo d'água ao acordar, antes do café."],
+["10 minutos de caminhada","Caminhe 10 minutos, de preferência ao ar livre."],
+["Celular fora do quarto","30 min sem tela antes de dormir; celular carregando fora do quarto."],
+["Café da manhã sem açúcar","Café, chá ou iogurte sem açúcar. Sinta o sabor de verdade dos alimentos."],
+["Senta-levanta","3 séries de 10 senta-levanta da cadeira ao longo do dia."],
+["3 coisas boas","Antes de dormir, escreva 3 coisas boas do dia."],
+["Compra consciente","Antes de comprar qualquer coisa, espere 24 horas."],
+["Dia sem refrigerante","Troque o refrigerante por água, água com gás e limão ou chá gelado sem açúcar."],
+["20 minutos só seus","Banho demorado, skincare, leitura: tempo para você, sem culpa."],
+["Planejar a semana","Liste os 3 compromissos mais importantes e 1 momento para você."],
+["Dance uma música","Dance uma música inteira, sozinha ou com alguém."],
+["Prato colorido","Pelo menos 3 cores no prato do almoço."],
+["5 minutos de respiração","Inspire em 4 segundos, solte em 6, por 5 minutos."],
+["Sem beliscar","Faça suas refeições nos horários e evite petiscar entre elas. Bateu a fome? Beba água primeiro."],
+["Notificações desligadas","Desative notificações de 3 apps ou fique 1 hora sem redes."],
+["Sol e natureza","15 minutos ao ar livre, de preferência de manhã."],
+["Dia sem doce","Um dia inteiro sem doces. Vontade? Uma fruta ou um chá resolvem."],
+["Força em casa","Treino de 15 min com garrafas d'água como peso."],
+["Cozinhar de verdade","Prepare uma refeição caseira simples."],
+["Dizer não","Recuse com gentileza algo que você não quer ou não pode fazer."],
+["Aquele exame adiado","Agende a consulta ou o check-up que está pendente."],
+["Mexa-se com alguém","Caminhe, dance ou treine com alguém que você ama."],
+["Destralhe 1 gaveta","Organize uma gaveta. Só uma!"],
+["Equilíbrio na escova","Escove os dentes 1 minuto em cada pé."],
+["Lanche planejado","Deixe pronto um lanche saudável para a tarde: fruta, castanhas ou iogurte natural."],
+["Carta para 2027","Escreva uma carta para a você de dezembro de 2027."],
+["Um elogio sincero","Elogie ou agradeça alguém de verdade, e a si mesma."],
+["Seu movimento favorito","Repita o exercício de que mais gostou no desafio."],
+["Escolha seus hábitos","Classifique os 30 desafios e escolha seus 3 hábitos para 2027."]];
+const DEF=[{id:"agua",name:"Beber água",type:"count",goal:8,unit:"copos"},{id:"mov",name:"Treinar ou me movimentar",type:"check"},
+{id:"med",name:"Meditar ou respirar",type:"check"},{id:"ali",name:"Alimentação consciente",type:"check"},
+{id:"sono",name:"Dormir no horário",type:"check"},{id:"cuid",name:"Um momento de autocuidado",type:"check"}];
+const MOODS=["Cansada","Ok","Bem","Ótima","Radiante"];
+const KEY="desafio30-v1",DAY=864e5,START=new Date(2026,10,24);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ds=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const dayDate=n=>new Date(START.getTime()+(n-1)*DAY+3600e3);
+const dayOf=d=>Math.floor((new Date(d.getFullYear(),d.getMonth(),d.getDate())-START+3600e3)/DAY)+1;
+const fmt=d=>d.toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit"});
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.habits)S={habits:DEF,log:{},rate:{},top:["","",""]};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+let cur=new Date();cur=new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());
+const L=k=>S.log[k]||(S.log[k]={h:{},ch:false,mood:null,note:""});
+const hDone=(h,v)=>h.type==="count"?(v||0)>=h.goal:!!v;
+const pct=k=>{const l=S.log[k];if(!l||!S.habits.length)return 0;return Math.round(100*S.habits.filter(h=>hDone(h,l.h[h.id])).length/S.habits.length)};
+const chDone=n=>{const l=S.log[ds(dayDate(n))];return !!(l&&l.ch)};
+const tick='<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function header(){
+  const n=dayOf(cur);
+  $("#daylbl").textContent=fmt(cur)+(n>=1&&n<=30?" · Dia "+n+" de 30":"");
+}
+function renderToday(){
+  const k=ds(cur),l=L(k),n=dayOf(cur);
+  if(n>=1&&n<=30){const c=CH[n-1];
+    $("#chal").innerHTML=`<div class="n">DESAFIO DO DIA ${n}/30</div><div class="t">${c[0]}</div><p>${c[1]}</p>
+    <button class="done-btn" id="chb" aria-pressed="${l.ch}">${l.ch?tick+" Feito!":"Marcar como feito"}</button>`;
+    $("#chb").onclick=()=>{l.ch=!l.ch;save();renderToday()};
+  }else $("#chal").innerHTML=`<div class="n">${n<1?"PRÉ-DESAFIO":"DEPOIS DO DESAFIO"}</div><div class="t">${n<1?"Preparação: começamos em 24/11":"Desafio concluído!"}</div><p>${n<1?"Hoje é o pré-desafio. Já vá testando seus hábitos diários abaixo.":"Seus hábitos diários continuam valendo. Siga marcando abaixo."}</p>`;
+  $("#habits").innerHTML=S.habits.map(h=>{const v=l.h[h.id];
+    if(h.type==="count"){const c=v||0;
+      return `<div class="habit"><button class="chk" aria-pressed="${c>=h.goal}" data-hc="${h.id}" aria-label="${esc(h.name)}">${c>=h.goal?tick:c}</button>
+      <div class="hname">${esc(h.name)}<small>${c} de ${h.goal} ${esc(h.unit||"")}</small></div>
+      <div class="dots">${Array.from({length:h.goal},(_,i)=>`<button class="dot" aria-label="${i+1}" aria-pressed="${i<c}" data-hd="${h.id}" data-i="${i+1}"></button>`).join("")}</div></div>`}
+    return `<div class="habit"><button class="chk" aria-pressed="${!!v}" data-hk="${h.id}" aria-label="${esc(h.name)}">${v?tick:""}</button><div class="hname">${esc(h.name)}</div></div>`}).join("")||'<p class="note">Adicione hábitos na aba Meus hábitos.</p>';
+  $("#moods").innerHTML=MOODS.map((m,i)=>`<button aria-pressed="${l.mood===i}" data-m="${i}">${m}</button>`).join("");
+  $("#note").value=l.note||"";
+  renderPlant();
+}
+function renderPlant(){
+  let svg='<path d="M150 410 C150 330 140 260 152 190 C162 120 146 70 150 20" fill="none" stroke="var(--green)" stroke-width="6" stroke-linecap="round"/>';
+  svg+='<path d="M95 410 h110 l-14 -40 h-82z" fill="var(--coral)"/><rect x="88" y="362" width="124" height="14" rx="5" fill="var(--coral)" opacity=".8"/>';
+  for(let i=1;i<=30;i++){const t=(i-1)/29,y=350-t*320,x=150+Math.sin(t*6)*4,side=i%2?1:-1,s=1-t*.45;
+    const on=chDone(i),today=i===dayOf(cur);
+    svg+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${side*-35}) scale(${(side*s).toFixed(2)} ${s.toFixed(2)})"><path class="leaf" d="M0 0 C14 -16 44 -16 58 0 C44 16 14 16 0 0z" fill="${on?"var(--leaf)":"var(--leaf0)"}" stroke="${today?"var(--coral)":"none"}" stroke-width="3"/><path d="M4 0 H50" stroke="${on?"rgba(255,255,255,.5)":"var(--line)"}" stroke-width="1.5"/></g>`}
+  $("#plant").innerHTML=svg;
+  let done=0;for(let i=1;i<=30;i++)if(chDone(i))done++;
+  $("#bigcount").textContent=done;
+  let st=0,d=new Date(cur);if(!S.log[ds(d)]?.ch)d=new Date(d.getTime()-DAY);
+  while(S.log[ds(d)]?.ch){st++;d=new Date(d.getTime()-DAY)}
+  const w=[];for(let i=6;i>=0;i--){const x=new Date(cur.getTime()-i*DAY+3600e3);w.push([x,pct(ds(x))])}
+  const avg=Math.round(w.reduce((a,b)=>a+b[1],0)/7);
+  $("#stats").innerHTML=`<div><b>${st}</b>dias seguidos</div><div><b>${pct(ds(cur))}%</b>hábitos hoje</div><div><b>${avg}%</b>média 7 dias</div>`;
+  $("#week").innerHTML=w.map(([x,p])=>`<div class="wrow"><span>${x.toLocaleDateString("pt-BR",{weekday:"short"}).replace(".","")}</span><div class="bar"><i style="width:${p}%"></i></div><span style="text-align:right">${p}%</span></div>`).join("");
+}
+function renderDays(){
+  $("#top3").innerHTML=[0,1,2].map(i=>`<input type="text" maxlength="60" data-top="${i}" value="${esc(S.top[i]||"")}" placeholder="Hábito ${i+1}">`).join("");
+  $("#days").innerHTML=CH.map((c,i)=>{const n=i+1,r=S.rate[n];
+    return `<div class="row"><div class="d">${n}<small>${dayDate(n).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}</small></div>
+    <div><b>${c[0]}</b><br><span class="ok">${chDone(n)?"Feito":""}</span></div>
+    <div class="rate">${[["sim","Levar"],["talvez","Talvez"],["nao","Não foi"]].map(([v,t])=>`<button data-r="${v}" data-n="${n}" aria-pressed="${r===v}">${t}</button>`).join("")}</div></div>`}).join("");
+}
+function renderHabits(){
+  $("#hlist").innerHTML=S.habits.map((h,i)=>`<div class="habit"><div class="hname">${esc(h.name)}<small>${h.type==="count"?"Contador · meta "+h.goal:"Marcar feito"}</small></div>
+  <button data-up="${i}" aria-label="Subir">↑</button><button data-del="${i}">Remover</button></div>`).join("")||'<p class="note">Nenhum hábito ainda.</p>';
+}
+function all(){header();renderToday();renderDays();renderHabits()}
+function ask(t,fn){$("#mtxt").textContent=t;$("#modal").classList.add("on");$("#myes").onclick=()=>{$("#modal").classList.remove("on");fn()}}
+$("#mno").onclick=()=>$("#modal").classList.remove("on");
+
+const move=d=>{cur=new Date(cur.getTime()+d*DAY+3600e3);cur=new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());header();renderToday()};
+$("#prev").onclick=()=>move(-1);$("#next").onclick=()=>move(1);
+$("#today").onclick=()=>{const t=new Date();cur=new Date(t.getFullYear(),t.getMonth(),t.getDate());header();renderToday()};
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["hoje","trinta","habitos"].forEach(v=>$("#v-"+v).hidden=v!==b.dataset.v);
+  if(b.dataset.v==="trinta")renderDays();});
+$("#habits").onclick=e=>{const b=e.target.closest("button");if(!b)return;const l=L(ds(cur));
+  if(b.dataset.hk){l.h[b.dataset.hk]=!l.h[b.dataset.hk]}
+  else if(b.dataset.hd){const i=+b.dataset.i;l.h[b.dataset.hd]=(l.h[b.dataset.hd]===i)?i-1:i}
+  else if(b.dataset.hc){const h=S.habits.find(x=>x.id===b.dataset.hc);const c=l.h[h.id]||0;l.h[h.id]=c>=h.goal?0:c+1}
+  save();renderToday()};
+$("#moods").onclick=e=>{const b=e.target.closest("button");if(!b)return;const l=L(ds(cur)),m=+b.dataset.m;l.mood=l.mood===m?null:m;save();renderToday()};
+$("#note").oninput=e=>{L(ds(cur)).note=e.target.value;save()};
+$("#days").onclick=e=>{const b=e.target.closest("button[data-r]");if(!b)return;const n=b.dataset.n;S.rate[n]=S.rate[n]===b.dataset.r?null:b.dataset.r;save();renderDays()};
+$("#top3").oninput=e=>{const i=e.target.dataset.top;if(i!=null){S.top[i]=e.target.value;save()}};
+$("#hlist").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.del){const i=+b.dataset.del;ask(`Remover "${S.habits[i].name}"? O histórico dele some das contas.`,()=>{S.habits.splice(i,1);save();all()})}
+  if(b.dataset.up){const i=+b.dataset.up;if(i>0){[S.habits[i-1],S.habits[i]]=[S.habits[i],S.habits[i-1]];save();all()}}};
+$("#ht").onchange=e=>$("#hg").hidden=e.target.value!=="count";$("#hg").hidden=true;
+$("#addf").onsubmit=e=>{e.preventDefault();const name=$("#hn").value.trim();if(!name)return;
+  const type=$("#ht").value;S.habits.push({id:"h"+Date.now(),name,type,goal:type==="count"?Math.max(2,Math.min(12,+$("#hg").value||3)):1});
+  $("#hn").value="";save();all()};
+$("#copyb").onclick=async()=>{const t=JSON.stringify(S);try{await navigator.clipboard.writeText(t);$("#bkmsg").textContent="Backup copiado. Cole num bloco de notas ou mande para você mesma."}catch(err){$("#bk").hidden=false;$("#bk").value=t;$("#bk").select();$("#bkmsg").textContent="Selecione e copie o texto acima."}};
+$("#impb").onclick=()=>{const bk=$("#bk");if(bk.hidden||!bk.value.trim()){bk.hidden=false;bk.value="";bk.focus();$("#bkmsg").textContent="Cole o backup e toque em Importar backup.";return}
+  try{const o=JSON.parse(bk.value);if(!o.habits||!o.log)throw 0;ask("Substituir os dados atuais pelo backup?",()=>{S=o;S.rate=S.rate||{};S.top=S.top||["","",""];save();all();bk.hidden=true;$("#bkmsg").textContent="Backup importado."})}
+  catch(err){$("#bkmsg").textContent="Esse texto não parece um backup válido."}};
+$("#reset").onclick=()=>ask("Apagar todos os registros e voltar aos hábitos iniciais?",()=>{S={habits:DEF.map(h=>({...h})),log:{},rate:{},top:["","",""]};save();all()});
+all();
+try{if("serviceWorker" in navigator&&location.protocol==="https:"&&!location.host.includes("claude"))navigator.serviceWorker.register("sw.js").catch(()=>{})}catch(e){}
+}
+</script>
+</body>
+</html>
